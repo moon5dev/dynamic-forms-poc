@@ -45,6 +45,10 @@
       <HintPath>..\packages\CefSharp.Common.107.1.120\lib\net452\CefSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CefSharp.Core.Runtime">
+      <HintPath>..\packages\CefSharp.Common.107.1.120\lib\net452\CefSharp.Core.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="CefSharp.WinForms">
       <HintPath>..\packages\CefSharp.WinForms.107.1.120\lib\net452\CefSharp.WinForms.dll</HintPath>
       <Private>True</Private>
