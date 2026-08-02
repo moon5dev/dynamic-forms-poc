@@ -7,6 +7,23 @@
   <link rel="stylesheet" href="editor.css">
 </head>
 <body>
+  <div id="dynamic-toolbar" class="editor-toolbar" role="toolbar" aria-label="Dynamic form commands">
+    <button type="button" data-design-only="true" onclick="window.editor.promptInsertTable()">표+</button>
+    <button type="button" data-design-only="true" onclick="window.editor.addTableRow()">행+</button>
+    <button type="button" data-design-only="true" onclick="window.editor.deleteTableRow()">행-</button>
+    <button type="button" data-design-only="true" onclick="window.editor.addTableColumn()">열+</button>
+    <button type="button" data-design-only="true" onclick="window.editor.deleteTableColumn()">열-</button>
+    <button type="button" data-design-only="true" onclick="window.editor.mergeCell()">병합</button>
+    <button type="button" data-design-only="true" onclick="window.editor.splitCell()">분할</button>
+    <button type="button" data-design-only="true" onclick="window.editor.toggleHeaderCell()">헤더</button>
+    <button type="button" data-design-only="true" onclick="window.editor.setCellSize()">셀크기</button>
+    <span class="toolbar-separator"></span>
+    <button type="button" data-design-only="true" onclick="window.editor.promptInsertTextField()">텍스트</button>
+    <button type="button" data-design-only="true" onclick="window.editor.promptInsertNumberField()">숫자</button>
+    <button type="button" data-design-only="true" onclick="window.editor.promptInsertSelectField()">콤보</button>
+    <button type="button" data-design-only="true" onclick="window.editor.promptInsertCheckboxField()">체크</button>
+    <button type="button" data-design-only="true" onclick="window.editor.promptInsertImageField()">이미지</button>
+  </div>
   <div id="workspace">
     <div id="page" class="a4-page">
       <div id="document" class="document" contenteditable="true"></div>

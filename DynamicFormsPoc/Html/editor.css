@@ -50,6 +50,14 @@ body {
   cursor: pointer;
 }
 
+.toolbar-separator {
+  display: inline-block;
+  width: 1px;
+  height: 22px;
+  margin: 0 4px;
+  background: #b8c3cc;
+}
+
 .editor-toolbar button:disabled,
 .editor-toolbar select:disabled,
 .editor-toolbar input:disabled {

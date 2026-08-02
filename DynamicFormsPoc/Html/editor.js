@@ -274,6 +274,7 @@
     }
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
+    updateCommandToolbar();
     if (isSummernote) {
       doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
       doc = editable();
@@ -287,6 +288,17 @@
       if (mode === 'design' && fields[i].tagName === 'BUTTON') {
         fields[i].disabled = true;
       }
+    }
+  }
+
+  function updateCommandToolbar() {
+    var toolbar = byId('dynamic-toolbar');
+    if (!toolbar) {
+      return;
+    }
+    var buttons = toolbar.querySelectorAll('[data-design-only="true"]');
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].disabled = mode !== 'design';
     }
   }
 
