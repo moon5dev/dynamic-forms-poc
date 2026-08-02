@@ -58,6 +58,16 @@ body {
   background: #b8c3cc;
 }
 
+.fill-format-tools {
+  display: none;
+  align-items: center;
+  gap: 4px;
+}
+
+.fill-mode .fill-format-tools {
+  display: inline-flex;
+}
+
 .editor-toolbar button:disabled,
 .editor-toolbar select:disabled,
 .editor-toolbar input:disabled {
@@ -81,12 +91,7 @@ body {
 }
 
 .fill-mode .note-editor .note-toolbar {
-  pointer-events: none;
-  opacity: 0.55;
-}
-
-.fill-mode .note-editor .note-toolbar .note-btn {
-  cursor: default;
+  display: none;
 }
 
 .note-editor .note-editing-area {
@@ -149,6 +154,8 @@ th {
   padding: 8px;
   min-width: 60px;
   vertical-align: top;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 th {
@@ -160,6 +167,7 @@ th {
   background: #dfeef3;
   font-weight: 700;
   text-align: center;
+  white-space: nowrap;
 }
 
 .field-control,
@@ -168,8 +176,8 @@ th {
   min-width: 120px;
   min-height: 24px;
   box-sizing: border-box;
-  border: 1px solid #2f70b7;
-  background: #f7fbff;
+  border: 1px solid #9aa7b2;
+  background: #fff;
   color: #222;
 }
 
@@ -194,8 +202,8 @@ input[type="checkbox"].field-control {
 
 .image-field {
   min-height: 210px;
-  border: 1px dashed #2f70b7;
-  background: #f7fbff;
+  border: 1px dashed #9aa7b2;
+  background: #fff;
   padding: 8px;
   box-sizing: border-box;
   text-align: center;
@@ -243,7 +251,7 @@ input[type="checkbox"].field-control {
 
 .fill-mode .field-control,
 .fill-mode .image-field {
-  outline: 1px solid #2f70b7;
+  outline: 0;
 }
 
 .print-value {
