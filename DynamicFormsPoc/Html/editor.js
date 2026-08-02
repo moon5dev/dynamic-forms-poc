@@ -197,6 +197,56 @@
     return node && node.className && String(node.className).indexOf(className) >= 0;
   }
 
+  function isAllowedFillTarget(node) {
+    if (!node) {
+      return false;
+    }
+    while (node && node !== document.body) {
+      if (hasClass(node, 'field-control')) {
+        return true;
+      }
+      if (node.getAttribute && node.getAttribute('data-image-action')) {
+        return true;
+      }
+      node = node.parentNode;
+    }
+    return false;
+  }
+
+  function preventFillEdit(event) {
+    if (mode !== 'fill' || isAllowedFillTarget(event.target)) {
+      return;
+    }
+
+    if (event.type === 'keydown') {
+      var key = event.key || '';
+      var allowedKeys = {
+        Tab: true,
+        Shift: true,
+        Control: true,
+        Alt: true,
+        Escape: true,
+        ArrowLeft: true,
+        ArrowRight: true,
+        ArrowUp: true,
+        ArrowDown: true,
+        Home: true,
+        End: true,
+        PageUp: true,
+        PageDown: true
+      };
+      if (allowedKeys[key]) {
+        return;
+      }
+      if ((event.ctrlKey || event.metaKey) && (key === 'a' || key === 'A' || key === 'c' || key === 'C')) {
+        return;
+      }
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   function applyFieldFormat(command, value) {
     var target = getFocusedField();
     if (!target) {
@@ -284,10 +334,10 @@
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
     if (isSummernote) {
-      doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
+      doc.setAttribute('contenteditable', 'true');
       doc = editable();
     } else {
-      doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
+      doc.setAttribute('contenteditable', 'true');
     }
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
@@ -331,6 +381,10 @@
     doc.addEventListener('change', function () {
       post('content-changed');
     });
+    doc.addEventListener('keydown', preventFillEdit, true);
+    doc.addEventListener('beforeinput', preventFillEdit, true);
+    doc.addEventListener('paste', preventFillEdit, true);
+    doc.addEventListener('drop', preventFillEdit, true);
     doc.addEventListener('click', function (event) {
       var target = event.target;
       if (hasClass(target, 'field-control')) {
