@@ -17,7 +17,7 @@
 - .NET Framework 4.5.2
 - Visual Studio 2017 구형 `.sln/.csproj`
 - CefSharp.WinForms `107.1.120`
-- CDN Summernote WYSIWYG + 로컬 `Html/editor.html`, `editor.css`, `editor.js`, `preview.html`
+- 로컬 Summernote WYSIWYG + 로컬 `Html/editor.html`, `editor.css`, `editor.js`, `preview.html`
 - JSON 파일 저장
 - 데이터베이스 없음
 
@@ -33,15 +33,16 @@
 
 ## WYSIWYG v1
 
-개발환경 테스트와 고객 데모 속도를 우선해 Summernote CDN을 먼저 사용합니다.
+회사망 보안 정책과 오프라인 데모를 고려해 Summernote와 jQuery를 프로젝트 내부 로컬 파일로 포함합니다.
 
-사용 CDN:
+포함 파일:
 
-- `https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.min.js`
-- `https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css`
-- `https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js`
+- `Html/vendor/jquery/jquery.min.js`
+- `Html/vendor/summernote/summernote-lite.min.css`
+- `Html/vendor/summernote/summernote-lite.min.js`
+- `Html/vendor/summernote/font/*`
 
-CDN 로딩에 실패하면 `editor.js`가 기본 `contenteditable` 모드로 폴백합니다. 운영 또는 완전 오프라인 데모가 필요하면 위 파일들을 프로젝트 내부에 내려받아 로컬 참조로 바꾸면 됩니다.
+각 vendor 폴더에 라이선스 파일을 같이 포함했습니다. 로컬 파일 로딩에 실패하면 `editor.js`가 기본 `contenteditable` 모드로 폴백합니다.
 
 WinForms 상단 툴바는 템플릿 저장/삭제, 관리자/사용자 모드, 합본, 미리보기, 인쇄 같은 앱 단위 명령만 담당합니다. 표 편집, 글꼴, 정렬, 입력 필드 삽입은 Summernote 에디터 내부 툴바에서 처리합니다.
 
@@ -93,8 +94,7 @@ WinForms 상단 툴바는 템플릿 저장/삭제, 관리자/사용자 모드, �
 3. `DynamicFormsPoc.sln`을 엽니다.
 4. NuGet 패키지 복원을 실행합니다.
 5. 구성은 `Debug|x64` 또는 `Release|x64`로 빌드합니다.
-6. CDN WYSIWYG를 확인하려면 실행 PC에서 `cdn.jsdelivr.net` 접근이 가능해야 합니다.
-7. 실행 후 좌측 템플릿 목록에서 샘플을 열거나 `새 템플릿`으로 시작합니다.
+6. 실행 후 좌측 템플릿 목록에서 샘플을 열거나 `새 템플릿`으로 시작합니다.
 
 ## 샘플 템플릿
 
