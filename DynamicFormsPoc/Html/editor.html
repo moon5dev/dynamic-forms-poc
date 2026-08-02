@@ -8,6 +8,27 @@
 </head>
 <body>
   <div id="dynamic-toolbar" class="editor-toolbar" role="toolbar" aria-label="Dynamic form commands">
+    <button type="button" onclick="window.editor.execCommand('bold')">B</button>
+    <button type="button" onclick="window.editor.execCommand('italic')">I</button>
+    <button type="button" onclick="window.editor.execCommand('underline')">U</button>
+    <select title="글꼴" onchange="window.editor.execCommand('fontName', this.value)">
+      <option value="Malgun Gothic">Malgun Gothic</option>
+      <option value="Arial">Arial</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Courier New">Courier New</option>
+    </select>
+    <select title="크기" onchange="window.editor.execCommand('fontSize', this.value)">
+      <option value="2">12</option>
+      <option value="3" selected>14</option>
+      <option value="4">18</option>
+      <option value="5">22</option>
+      <option value="6">28</option>
+    </select>
+    <input type="color" title="글자색" value="#222222" onchange="window.editor.execCommand('foreColor', this.value)" />
+    <button type="button" onclick="window.editor.execCommand('justifyLeft')">왼쪽</button>
+    <button type="button" onclick="window.editor.execCommand('justifyCenter')">가운데</button>
+    <button type="button" onclick="window.editor.execCommand('justifyRight')">오른쪽</button>
+    <span class="toolbar-separator"></span>
     <button type="button" data-design-only="true" onclick="window.editor.promptInsertTable()">표+</button>
     <button type="button" data-design-only="true" onclick="window.editor.addTableRow()">행+</button>
     <button type="button" data-design-only="true" onclick="window.editor.deleteTableRow()">행-</button>

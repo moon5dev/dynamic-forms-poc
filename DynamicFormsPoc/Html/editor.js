@@ -176,6 +176,14 @@
     if (!node || node === document.body) {
       node = lastFillTarget;
     }
+    var field = findFieldFromNode(node);
+    if (field) {
+      return field;
+    }
+    return findFieldFromNode(lastFillTarget);
+  }
+
+  function findFieldFromNode(node) {
     while (node && node !== document.body) {
       if (hasClass(node, 'field-control') || hasClass(node, 'image-field')) {
         return node;
@@ -557,8 +565,8 @@
       syncEditorCodeFromDom();
       post('content-changed');
     },
-    execCommand: function (command) {
-      runCommand(command, null);
+    execCommand: function (command, value) {
+      runCommand(command, value || null);
     },
     insertTable: function (rows, columns) {
       rows = rows || 3;
