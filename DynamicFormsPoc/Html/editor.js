@@ -361,8 +361,12 @@
   }
 
   function syncEditorCodeFromDom() {
+    var doc = editable();
+    syncFieldAttributes(doc);
+    if (mode === 'fill') {
+      return;
+    }
     if (isSummernote) {
-      var doc = editable();
       window.jQuery('#document').summernote('code', doc.innerHTML);
       documentElement = document.querySelector('.note-editable');
     }
