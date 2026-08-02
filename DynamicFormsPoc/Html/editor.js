@@ -275,11 +275,7 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     if (isSummernote) {
-      if (mode === 'design') {
-        window.jQuery('#document').summernote('enable');
-      } else {
-        window.jQuery('#document').summernote('disable');
-      }
+      doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
       doc = editable();
     } else {
       doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
@@ -453,7 +449,7 @@
   function initSummernote() {
     if (!hasSummernote()) {
       documentElement = byId('document');
-      post('error', { Message: 'Summernote CDN 로딩 실패. 기본 contenteditable 모드로 실행합니다.', message: 'Summernote CDN 로딩 실패. 기본 contenteditable 모드로 실행합니다.' });
+      post('error', { Message: 'Summernote 로컬 파일 로딩 실패. 기본 contenteditable 모드로 실행합니다.', message: 'Summernote 로컬 파일 로딩 실패. 기본 contenteditable 모드로 실행합니다.' });
       return;
     }
 
@@ -462,9 +458,10 @@
       return function () {
         return ui.button({
           contents: contents,
-          tooltip: tooltip,
-          container: 'body',
-          click: handler
+          click: handler,
+          callback: function (node) {
+            node.attr('title', tooltip);
+          }
         }).render();
       };
     };
