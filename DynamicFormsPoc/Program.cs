@@ -37,7 +37,7 @@ namespace DynamicFormsPoc
             settings.CefCommandLineArgs.Add("allow-file-access-from-files", "1");
             settings.CefCommandLineArgs.Add("disable-web-security", "1");
 
-            Cef.Initialize(settings, true, null);
+            Cef.Initialize(settings, true, (IBrowserProcessHandler)null);
         }
     }
 }
