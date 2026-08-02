@@ -112,7 +112,6 @@
     <PropertyGroup>
       <ErrorText>NuGet 패키지가 복원되지 않았습니다. Visual Studio에서 Restore NuGet Packages를 실행하세요. 누락 파일: {0}</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\cef.redist.x64.107.1.12\build\cef.redist.x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\cef.redist.x64.107.1.12\build\cef.redist.x64.targets'))" />
     <Error Condition="!Exists('..\packages\CefSharp.Common.107.1.120\build\CefSharp.Common.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.107.1.120\build\CefSharp.Common.props'))" />
     <Error Condition="!Exists('..\packages\CefSharp.Common.107.1.120\build\CefSharp.Common.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CefSharp.Common.107.1.120\build\CefSharp.Common.targets'))" />
   </Target>
