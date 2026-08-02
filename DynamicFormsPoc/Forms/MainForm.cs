@@ -34,14 +34,12 @@ namespace DynamicFormsPoc.Forms
         private bool editorReady;
 
         private ToolStripButton saveButton;
-        private readonly List<ToolStripItem> structureOnlyButtons;
 
         public MainForm()
         {
             templateStore = new TemplateStore();
             tempImageService = new TempImageService();
             compositionItems = new List<CompositionItem>();
-            structureOnlyButtons = new List<ToolStripItem>();
 
             Text = "Dynamic Forms PoC";
             Width = 1400;
@@ -72,26 +70,6 @@ namespace DynamicFormsPoc.Forms
             AddButton("다른 이름으로 저장", SaveAsClick);
             AddButton("삭제", DeleteClick);
             AddButton("새로고침", RefreshClick);
-            toolStrip.Items.Add(new ToolStripSeparator());
-
-            AddButton("굵게", delegate { ExecFormat("bold"); });
-            AddButton("기울임", delegate { ExecFormat("italic"); });
-            AddButton("밑줄", delegate { ExecFormat("underline"); });
-            AddButton("왼쪽 정렬", delegate { ExecFormat("justifyLeft"); });
-            AddButton("가운데 정렬", delegate { ExecFormat("justifyCenter"); });
-            AddButton("오른쪽 정렬", delegate { ExecFormat("justifyRight"); });
-            AddStructureButton("표 삽입", InsertTableClick);
-            AddStructureButton("행 추가", delegate { RunEditor(editor.AddTableRow()); });
-            AddStructureButton("행 삭제", delegate { RunEditor(editor.DeleteTableRow()); });
-            AddStructureButton("열 추가", delegate { RunEditor(editor.AddTableColumn()); });
-            AddStructureButton("열 삭제", delegate { RunEditor(editor.DeleteTableColumn()); });
-            toolStrip.Items.Add(new ToolStripSeparator());
-
-            AddStructureButton("텍스트 입력칸", InsertTextFieldClick);
-            AddStructureButton("숫자 입력칸", InsertNumberFieldClick);
-            AddStructureButton("콤보박스", InsertSelectFieldClick);
-            AddStructureButton("체크박스", InsertCheckboxFieldClick);
-            AddStructureButton("이미지 영역", InsertImageFieldClick);
             toolStrip.Items.Add(new ToolStripSeparator());
 
             AddButton("관리자 모드", DesignModeClick);
@@ -168,12 +146,6 @@ namespace DynamicFormsPoc.Forms
             button.Click += handler;
             toolStrip.Items.Add(button);
             return button;
-        }
-
-        private void AddStructureButton(string text, EventHandler handler)
-        {
-            ToolStripButton button = AddButton(text, handler);
-            structureOnlyButtons.Add(button);
         }
 
         private void BrowserFrameLoadEnd(object sender, FrameLoadEndEventArgs e)
@@ -386,79 +358,6 @@ namespace DynamicFormsPoc.Forms
             UpdateStatus();
         }
 
-        private void ExecFormat(string command)
-        {
-            RunEditor(editor.Execute("editor.execCommand", command));
-        }
-
-        private void InsertTableClick(object sender, EventArgs e)
-        {
-            RunEditor(editor.Execute("editor.promptInsertTable"));
-        }
-
-        private void InsertTextFieldClick(object sender, EventArgs e)
-        {
-            object config = BuildSimpleFieldConfig("텍스트 입력칸", false);
-            if (config != null)
-            {
-                RunEditor(editor.InsertTextField(config));
-            }
-        }
-
-        private void InsertNumberFieldClick(object sender, EventArgs e)
-        {
-            object config = BuildSimpleFieldConfig("숫자 입력칸", false);
-            if (config != null)
-            {
-                RunEditor(editor.InsertNumberField(config));
-            }
-        }
-
-        private void InsertSelectFieldClick(object sender, EventArgs e)
-        {
-            object config = BuildSimpleFieldConfig("콤보박스", true);
-            if (config != null)
-            {
-                RunEditor(editor.InsertSelectField(config));
-            }
-        }
-
-        private void InsertCheckboxFieldClick(object sender, EventArgs e)
-        {
-            object config = BuildSimpleFieldConfig("체크박스", false);
-            if (config != null)
-            {
-                RunEditor(editor.InsertCheckboxField(config));
-            }
-        }
-
-        private void InsertImageFieldClick(object sender, EventArgs e)
-        {
-            object config = BuildSimpleFieldConfig("이미지 영역", false);
-            if (config != null)
-            {
-                RunEditor(editor.InsertImageField(config));
-            }
-        }
-
-        private object BuildSimpleFieldConfig(string title, bool showOptions)
-        {
-            using (var dialog = new FieldConfigDialog(title, showOptions))
-            {
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return null;
-                }
-
-                if (showOptions)
-                {
-                    return new { id = Guid.NewGuid().ToString("N"), label = dialog.FieldLabel, options = dialog.Options };
-                }
-
-                return new { id = Guid.NewGuid().ToString("N"), label = dialog.FieldLabel };
-            }
-        }
-
         private async void DesignModeClick(object sender, EventArgs e)
         {
             isFillMode = false;
@@ -615,11 +514,6 @@ namespace DynamicFormsPoc.Forms
             if (saveButton != null)
             {
                 saveButton.Enabled = !isFillMode;
-            }
-
-            for (int i = 0; i < structureOnlyButtons.Count; i++)
-            {
-                structureOnlyButtons[i].Enabled = !isFillMode;
             }
         }
     }

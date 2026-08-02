@@ -102,6 +102,44 @@
     };
   }
 
+  function trimText(value) {
+    return String(value || '').replace(/^\s+|\s+$/g, '');
+  }
+
+  function promptFieldConfig(defaultLabel, includeOptions) {
+    if (mode !== 'design') {
+      return null;
+    }
+
+    var label = window.prompt('필드명', defaultLabel);
+    if (label === null) {
+      return null;
+    }
+
+    var config = {
+      id: guid(),
+      label: trimText(label) || defaultLabel
+    };
+
+    if (includeOptions) {
+      var optionText = window.prompt('콤보 옵션(쉼표 구분)', 'OK,NG,N/A');
+      if (optionText === null) {
+        return null;
+      }
+      var rawOptions = optionText.split(',');
+      var options = [];
+      for (var i = 0; i < rawOptions.length; i++) {
+        var option = trimText(rawOptions[i]);
+        if (option) {
+          options.push(option);
+        }
+      }
+      config.options = options.length ? options : ['OK', 'NG', 'N/A'];
+    }
+
+    return config;
+  }
+
   function getSelectedCell() {
     var selection = window.getSelection && window.getSelection();
     var node = selection && selection.anchorNode;
@@ -419,11 +457,39 @@
       return;
     }
 
+    var ui = window.jQuery.summernote.ui;
+    var button = function (contents, tooltip, handler) {
+      return function () {
+        return ui.button({
+          contents: contents,
+          tooltip: tooltip,
+          container: 'body',
+          click: handler
+        }).render();
+      };
+    };
+
     isSummernote = true;
     window.jQuery('#document').summernote({
       height: 1043,
       dialogsInBody: true,
       fontNames: ['Malgun Gothic', 'Arial', 'Arial Black', 'Courier New', 'Times New Roman'],
+      buttons: {
+        dynTablePrompt: button('표+', '행/열 수를 입력해 표 삽입', function () { window.editor.promptInsertTable(); }),
+        dynRowAdd: button('행+', '선택한 표에 행 추가', function () { window.editor.addTableRow(); }),
+        dynRowDel: button('행-', '선택한 표의 행 삭제', function () { window.editor.deleteTableRow(); }),
+        dynColAdd: button('열+', '선택한 표에 열 추가', function () { window.editor.addTableColumn(); }),
+        dynColDel: button('열-', '선택한 표의 열 삭제', function () { window.editor.deleteTableColumn(); }),
+        dynMerge: button('병합', '선택한 셀 병합', function () { window.editor.mergeCell(); }),
+        dynSplit: button('분할', '선택한 셀 분할', function () { window.editor.splitCell(); }),
+        dynHeader: button('헤더', '선택한 셀 헤더 스타일 토글', function () { window.editor.toggleHeaderCell(); }),
+        dynCellSize: button('셀크기', '선택한 셀 너비/높이 지정', function () { window.editor.setCellSize(); }),
+        dynText: button('텍스트', '텍스트 입력칸 삽입', function () { window.editor.promptInsertTextField(); }),
+        dynNumber: button('숫자', '숫자 입력칸 삽입', function () { window.editor.promptInsertNumberField(); }),
+        dynSelect: button('콤보', '콤보박스 삽입', function () { window.editor.promptInsertSelectField(); }),
+        dynCheck: button('체크', '체크박스 삽입', function () { window.editor.promptInsertCheckboxField(); }),
+        dynImage: button('이미지', '이미지 영역 삽입', function () { window.editor.promptInsertImageField(); })
+      },
       toolbar: [
         ['style', ['style']],
         ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -431,7 +497,8 @@
         ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
-        ['table', ['table']],
+        ['table', ['table', 'dynTablePrompt', 'dynRowAdd', 'dynRowDel', 'dynColAdd', 'dynColDel', 'dynMerge', 'dynSplit', 'dynHeader', 'dynCellSize']],
+        ['fields', ['dynText', 'dynNumber', 'dynSelect', 'dynCheck', 'dynImage']],
         ['insert', ['hr']],
         ['view', ['codeview']]
       ],
@@ -654,9 +721,21 @@
       config = getConfig(config);
       insertHtml('<input class="field-control" data-field-id="' + htmlEscape(config.id) + '" data-field-type="text" data-field-label="' + htmlEscape(config.label) + '" type="text" value="" placeholder="' + htmlEscape(config.label) + '" />');
     },
+    promptInsertTextField: function () {
+      var config = promptFieldConfig('텍스트 입력칸', false);
+      if (config) {
+        this.insertTextField(config);
+      }
+    },
     insertNumberField: function (config) {
       config = getConfig(config);
       insertHtml('<input class="field-control" data-field-id="' + htmlEscape(config.id) + '" data-field-type="number" data-field-label="' + htmlEscape(config.label) + '" type="number" value="" placeholder="' + htmlEscape(config.label) + '" />');
+    },
+    promptInsertNumberField: function () {
+      var config = promptFieldConfig('숫자 입력칸', false);
+      if (config) {
+        this.insertNumberField(config);
+      }
     },
     insertSelectField: function (config) {
       config = getConfig(config);
@@ -667,13 +746,31 @@
       html += '</select>';
       insertHtml(html);
     },
+    promptInsertSelectField: function () {
+      var config = promptFieldConfig('콤보박스', true);
+      if (config) {
+        this.insertSelectField(config);
+      }
+    },
     insertCheckboxField: function (config) {
       config = getConfig(config);
       insertHtml('<label class="field-label"><input class="field-control" data-field-id="' + htmlEscape(config.id) + '" data-field-type="checkbox" data-field-label="' + htmlEscape(config.label) + '" type="checkbox" /> ' + htmlEscape(config.label) + '</label>');
     },
+    promptInsertCheckboxField: function () {
+      var config = promptFieldConfig('체크박스', false);
+      if (config) {
+        this.insertCheckboxField(config);
+      }
+    },
     insertImageField: function (config) {
       config = getConfig(config);
       insertHtml('<div class="image-field" data-field-id="' + htmlEscape(config.id) + '" data-field-type="image" data-field-label="' + htmlEscape(config.label) + '"><div class="image-placeholder">이미지 없음 - ' + htmlEscape(config.label) + '</div><img class="image-preview" alt="' + htmlEscape(config.label) + '" /><div class="image-actions"><button type="button" data-image-action="choose">선택</button><button type="button" data-image-action="remove">삭제</button></div></div>');
+    },
+    promptInsertImageField: function () {
+      var config = promptFieldConfig('이미지 영역', false);
+      if (config) {
+        this.insertImageField(config);
+      }
     },
     setImageSource: function (fieldId, imageUrl) {
       var field = editable().querySelector('.image-field[data-field-id="' + fieldId + '"]');
