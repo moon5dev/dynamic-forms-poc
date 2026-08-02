@@ -1,0 +1,304 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: "Malgun Gothic", Arial, sans-serif;
+  font-size: 14px;
+  color: #222;
+  background: #777;
+}
+
+#workspace,
+.preview-root {
+  min-height: 100vh;
+  padding: 28px 0;
+  box-sizing: border-box;
+  background: #777;
+  overflow-y: auto;
+}
+
+.editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #b8c3cc;
+  background: #f7f9fb;
+  box-sizing: border-box;
+}
+
+.editor-toolbar button,
+.editor-toolbar select,
+.editor-toolbar input[type="color"] {
+  height: 26px;
+  border: 1px solid #aab8c4;
+  background: #fff;
+  color: #222;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.editor-toolbar button {
+  min-width: 36px;
+  padding: 0 8px;
+  cursor: pointer;
+}
+
+.editor-toolbar button:disabled,
+.editor-toolbar select:disabled,
+.editor-toolbar input:disabled {
+  color: #999;
+  background: #eceff2;
+  cursor: default;
+}
+
+.note-editor.note-frame {
+  border: 0;
+  box-shadow: none;
+  font-family: "Malgun Gothic", Arial, sans-serif;
+}
+
+.note-editor .note-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 1px solid #b8c3cc;
+  background: #f7f9fb;
+}
+
+.note-editor .note-editing-area {
+  background: #fff;
+}
+
+.note-editor .note-editable {
+  min-height: 1043px;
+  padding: 40px;
+  box-sizing: border-box;
+  color: #222;
+  font-family: "Malgun Gothic", Arial, sans-serif;
+  font-size: 14px;
+}
+
+.note-editor .note-statusbar {
+  display: none;
+}
+
+.a4-page {
+  width: 794px;
+  min-height: 1123px;
+  margin: 0 auto 28px auto;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+  box-sizing: border-box;
+  page-break-after: always;
+}
+
+.document {
+  min-height: 1043px;
+  padding: 40px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.document[contenteditable="true"] {
+  cursor: text;
+}
+
+h1 {
+  margin: 0 0 18px 0;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+p {
+  margin: 10px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+}
+
+td,
+th {
+  border: 1px solid #666;
+  padding: 8px;
+  min-width: 60px;
+  vertical-align: top;
+}
+
+th {
+  background: #f0f0f0;
+  font-weight: 700;
+}
+
+.header-cell {
+  background: #dfeef3;
+  font-weight: 700;
+  text-align: center;
+}
+
+.field-control,
+.field-print-value {
+  display: inline-block;
+  min-width: 120px;
+  min-height: 24px;
+  box-sizing: border-box;
+  border: 1px solid #2f70b7;
+  background: #f7fbff;
+  color: #222;
+}
+
+input.field-control,
+select.field-control {
+  height: 26px;
+  padding: 2px 6px;
+}
+
+input[type="checkbox"].field-control {
+  min-width: auto;
+  width: auto;
+  height: auto;
+  vertical-align: middle;
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.image-field {
+  min-height: 210px;
+  border: 1px dashed #2f70b7;
+  background: #f7fbff;
+  padding: 8px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.image-placeholder {
+  height: 150px;
+  line-height: 150px;
+  color: #666;
+  background: #fff;
+  border: 1px solid #d3e2f2;
+  box-sizing: border-box;
+  margin-bottom: 8px;
+}
+
+.image-preview {
+  display: none;
+  max-width: 100%;
+  max-height: 170px;
+  object-fit: contain;
+  margin: 0 auto 8px auto;
+}
+
+.image-field.has-image .image-placeholder {
+  display: none;
+}
+
+.image-field.has-image .image-preview {
+  display: block;
+}
+
+.image-actions button {
+  margin: 0 2px;
+}
+
+.fill-mode .document {
+  cursor: default;
+}
+
+.fill-mode table,
+.fill-mode td,
+.fill-mode th {
+  resize: none;
+}
+
+.fill-mode .field-control,
+.fill-mode .image-field {
+  outline: 1px solid #2f70b7;
+}
+
+.print-value {
+  display: none;
+  white-space: pre-wrap;
+}
+
+@media print {
+  html,
+  body,
+  #workspace,
+  .preview-root {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+    page-break-after: always;
+  }
+
+  .document {
+    min-height: auto;
+    padding: 12mm;
+  }
+
+  .field-control {
+    border: 0;
+    background: transparent;
+    outline: 0;
+  }
+
+  select.field-control {
+    display: none;
+  }
+
+  .print-value {
+    display: inline;
+  }
+
+  .image-actions {
+    display: none;
+  }
+
+  .editor-toolbar {
+    display: none;
+  }
+
+  .note-toolbar,
+  .note-statusbar {
+    display: none;
+  }
+
+  .note-editor.note-frame {
+    border: 0;
+  }
+
+  .note-editor .note-editable {
+    min-height: auto;
+    padding: 12mm;
+  }
+
+  .image-field {
+    border: 0;
+    background: transparent;
+  }
+
+  .image-placeholder {
+    display: none;
+  }
+}
