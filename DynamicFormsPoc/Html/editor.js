@@ -470,7 +470,13 @@
     window.jQuery('#document').summernote({
       height: 1043,
       dialogsInBody: true,
+      disableDragAndDrop: true,
       fontNames: ['Malgun Gothic', 'Arial', 'Arial Black', 'Courier New', 'Times New Roman'],
+      popover: {
+        image: [],
+        link: [],
+        table: []
+      },
       buttons: {
         dynTablePrompt: button('표+', '행/열 수를 입력해 표 삽입', function () { window.editor.promptInsertTable(); }),
         dynRowAdd: button('행+', '선택한 표에 행 추가', function () { window.editor.addTableRow(); }),
