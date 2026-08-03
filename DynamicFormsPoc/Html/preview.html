@@ -24,7 +24,11 @@
           root.appendChild(page);
         }
         if (window.editor) {
-          window.editor.prepareForPrint(root);
+          if (window.editor.prepareForPreview) {
+            window.editor.prepareForPreview(root);
+          } else {
+            window.editor.prepareForPrint(root);
+          }
         }
       },
       printDocument: function () {

@@ -524,6 +524,28 @@
     }
   }
 
+  function prepareRootForPreview(root) {
+    root = root || document;
+    prepareRootForPrint(root);
+    var controls = root.querySelectorAll('input.field-control, select.field-control, textarea.field-control, button');
+    for (var i = 0; i < controls.length; i++) {
+      var control = controls[i];
+      var tag = control.tagName ? control.tagName.toLowerCase() : '';
+      var type = (control.getAttribute('type') || '').toLowerCase();
+      control.setAttribute('tabindex', '-1');
+      if (tag === 'input' && type !== 'checkbox' && type !== 'radio') {
+        control.readOnly = true;
+        control.setAttribute('readonly', 'readonly');
+      } else if (tag === 'textarea') {
+        control.readOnly = true;
+        control.setAttribute('readonly', 'readonly');
+      } else {
+        control.disabled = true;
+        control.setAttribute('disabled', 'disabled');
+      }
+    }
+  }
+
   function initSummernote() {
     if (!hasSummernote()) {
       documentElement = byId('document');
@@ -903,6 +925,9 @@
     },
     prepareForPrint: function (root) {
       prepareRootForPrint(root);
+    },
+    prepareForPreview: function (root) {
+      prepareRootForPreview(root);
     },
     printDocument: function () {
       prepareRootForPrint(document);

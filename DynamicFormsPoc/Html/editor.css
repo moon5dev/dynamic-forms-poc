@@ -266,6 +266,18 @@ input[type="checkbox"].field-control {
   display: none;
 }
 
+.preview-body .field-control,
+.preview-body .field-label,
+.preview-body .image-field {
+  pointer-events: none;
+}
+
+.preview-body .field-control:disabled {
+  opacity: 1;
+  color: #222;
+  background: #fff;
+}
+
 .fill-mode .document {
   cursor: default;
 }
