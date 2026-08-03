@@ -197,11 +197,25 @@
     return node && node.className && String(node.className).indexOf(className) >= 0;
   }
 
+  function isNativeFillControl(node) {
+    if (!node || !node.tagName) {
+      return false;
+    }
+    var tag = node.tagName.toUpperCase();
+    if (tag !== 'INPUT' && tag !== 'SELECT' && tag !== 'TEXTAREA' && tag !== 'BUTTON') {
+      return false;
+    }
+    return hasClass(node, 'field-control') || (node.getAttribute && node.getAttribute('data-image-action'));
+  }
+
   function isAllowedFillTarget(node) {
     if (!node) {
       return false;
     }
     while (node && node !== document.body) {
+      if (isNativeFillControl(node)) {
+        return true;
+      }
       if (hasClass(node, 'field-control')) {
         return true;
       }
@@ -220,11 +234,8 @@
     if (isAllowedFillTarget(document.activeElement)) {
       return true;
     }
-    if (isAllowedFillTarget(lastFillTarget)) {
-      var active = document.activeElement;
-      if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA')) {
-        return true;
-      }
+    if (isNativeFillControl(document.activeElement)) {
+      return true;
     }
     if (event.composedPath) {
       var path = event.composedPath();
@@ -357,12 +368,7 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
-    if (isSummernote) {
-      doc.setAttribute('contenteditable', 'true');
-      doc = editable();
-    } else {
-      doc.setAttribute('contenteditable', 'true');
-    }
+    doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
     for (var i = 0; i < fields.length; i++) {
