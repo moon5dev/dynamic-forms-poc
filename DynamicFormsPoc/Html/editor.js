@@ -237,6 +237,9 @@
     if (isNativeFillControl(document.activeElement)) {
       return true;
     }
+    if (isNativeFillControl(lastFillTarget)) {
+      return true;
+    }
     if (event.composedPath) {
       var path = event.composedPath();
       for (var i = 0; i < path.length; i++) {
@@ -368,13 +371,16 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
-    doc.setAttribute('contenteditable', mode === 'design' ? 'true' : 'false');
+    doc.setAttribute('contenteditable', 'true');
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
     for (var i = 0; i < fields.length; i++) {
       fields[i].disabled = false;
+      fields[i].removeAttribute('disabled');
+      fields[i].removeAttribute('readonly');
       if (mode === 'design' && fields[i].tagName === 'BUTTON') {
         fields[i].disabled = true;
+        fields[i].setAttribute('disabled', 'disabled');
       }
     }
   }
@@ -419,14 +425,25 @@
     doc.addEventListener('beforeinput', preventFillEdit, true);
     doc.addEventListener('paste', preventFillEdit, true);
     doc.addEventListener('drop', preventFillEdit, true);
+    doc.addEventListener('mousedown', function (event) {
+      var target = event.target;
+      if (hasClass(target, 'field-control')) {
+        lastFillTarget = target;
+      } else if (findImageField(target)) {
+        lastFillTarget = findImageField(target);
+      } else {
+        lastFillTarget = null;
+      }
+    });
     doc.addEventListener('click', function (event) {
       var target = event.target;
       if (hasClass(target, 'field-control')) {
         lastFillTarget = target;
-      }
-      var imageFocus = findImageField(target);
-      if (imageFocus) {
+      } else if (findImageField(target)) {
+        var imageFocus = findImageField(target);
         lastFillTarget = imageFocus;
+      } else {
+        lastFillTarget = null;
       }
       if (target && target.getAttribute('data-image-action') === 'choose') {
         var field = findImageField(target);
@@ -448,6 +465,8 @@
       var target = event.target;
       if (hasClass(target, 'field-control')) {
         lastFillTarget = target;
+      } else {
+        lastFillTarget = null;
       }
     });
   }
