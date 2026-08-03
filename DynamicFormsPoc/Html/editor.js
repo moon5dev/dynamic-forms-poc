@@ -797,6 +797,17 @@
       }
       post('content-changed');
     },
+    setCellBackground: function (color) {
+      if (mode !== 'design') {
+        return;
+      }
+      var cell = requireCell();
+      if (!cell) {
+        return;
+      }
+      cell.style.backgroundColor = color || '#dfeef3';
+      post('content-changed');
+    },
     insertTextField: function (config) {
       config = getConfig(config);
       insertHtml('<input class="field-control" data-field-id="' + htmlEscape(config.id) + '" data-field-type="text" data-field-label="' + htmlEscape(config.label) + '" type="text" value="" placeholder="' + htmlEscape(config.label) + '" />');

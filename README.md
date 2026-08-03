@@ -157,6 +157,7 @@ C#에서 호출하는 JavaScript 함수는 `DynamicFormsPoc/Services/EditorServi
 - `editor.splitCell()`
 - `editor.toggleHeaderCell()`
 - `editor.setCellSize()`
+- `editor.setCellBackground(color)`
 - `editor.insertTextField(config)`
 - `editor.insertNumberField(config)`
 - `editor.insertSelectField(config)`

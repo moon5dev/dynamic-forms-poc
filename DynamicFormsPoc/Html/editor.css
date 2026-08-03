@@ -50,6 +50,24 @@ body {
   cursor: pointer;
 }
 
+.toolbar-color-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid #aab8c4;
+  background: #fff;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.toolbar-color-label input[type="color"] {
+  width: 28px;
+  padding: 0;
+  border: 0;
+}
+
 .toolbar-separator {
   display: inline-block;
   width: 1px;
