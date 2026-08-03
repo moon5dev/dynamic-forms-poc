@@ -578,8 +578,7 @@
         ['fontsize', ['fontsize']],
         ['color', ['color']],
         ['para', ['ul', 'ol', 'paragraph']],
-        ['table', ['table', 'dynTablePrompt', 'dynRowAdd', 'dynRowDel', 'dynColAdd', 'dynColDel', 'dynMerge', 'dynSplit', 'dynHeader', 'dynCellSize']],
-        ['fields', ['dynText', 'dynNumber', 'dynSelect', 'dynCheck', 'dynImage']],
+        ['table', ['table']],
         ['insert', ['hr']],
         ['view', ['codeview']]
       ],

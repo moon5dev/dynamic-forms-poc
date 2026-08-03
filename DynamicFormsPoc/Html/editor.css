@@ -68,6 +68,11 @@ body {
   display: inline-flex;
 }
 
+.fill-mode #dynamic-toolbar [data-design-only="true"],
+.fill-mode #dynamic-toolbar .toolbar-separator {
+  display: none;
+}
+
 .editor-toolbar button:disabled,
 .editor-toolbar select:disabled,
 .editor-toolbar input:disabled {
