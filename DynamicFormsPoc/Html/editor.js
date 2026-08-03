@@ -458,6 +458,16 @@
     }
   }
 
+  function findFieldLabel(node) {
+    while (node && node !== document) {
+      if (hasClass(node, 'field-label')) {
+        return node;
+      }
+      node = node.parentNode;
+    }
+    return null;
+  }
+
   function syncFieldAttributes(root) {
     root = root || editable();
     var controls = root.querySelectorAll('input, textarea, select');
@@ -515,12 +525,33 @@
     for (var o = 0; o < oldValues.length; o++) {
       oldValues[o].parentNode.removeChild(oldValues[o]);
     }
+    var oldHidden = root.querySelectorAll('.print-hidden');
+    for (var h = 0; h < oldHidden.length; h++) {
+      oldHidden[h].className = oldHidden[h].className.replace(/\bprint-hidden\b/g, '').replace(/\s+/g, ' ');
+    }
     var selects = root.querySelectorAll('select.field-control');
     for (var i = 0; i < selects.length; i++) {
       var span = document.createElement('span');
       span.className = 'print-value';
       span.appendChild(document.createTextNode(selects[i].options[selects[i].selectedIndex] ? selects[i].options[selects[i].selectedIndex].text : ''));
       selects[i].parentNode.insertBefore(span, selects[i].nextSibling);
+      selects[i].className += ' print-hidden';
+    }
+    var checkboxes = root.querySelectorAll('input[type="checkbox"].field-control');
+    for (var c = 0; c < checkboxes.length; c++) {
+      var checkbox = checkboxes[c];
+      var label = checkbox.getAttribute('data-field-label') || '';
+      var checkSpan = document.createElement('span');
+      checkSpan.className = 'print-value checkbox-print-value';
+      checkSpan.appendChild(document.createTextNode((checkbox.checked ? '☑ ' : '☐ ') + label));
+      var wrapper = findFieldLabel(checkbox);
+      if (wrapper) {
+        wrapper.parentNode.insertBefore(checkSpan, wrapper.nextSibling);
+        wrapper.className += ' print-hidden';
+      } else {
+        checkbox.parentNode.insertBefore(checkSpan, checkbox.nextSibling);
+        checkbox.className += ' print-hidden';
+      }
     }
   }
 

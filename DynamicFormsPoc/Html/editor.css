@@ -286,6 +286,10 @@ input[type="checkbox"].field-control {
   display: inline;
 }
 
+.preview-body .print-hidden {
+  display: none;
+}
+
 .fill-mode .document {
   cursor: default;
 }
@@ -341,6 +345,10 @@ input[type="checkbox"].field-control {
 
   .print-value {
     display: inline;
+  }
+
+  .print-hidden {
+    display: none;
   }
 
   .image-actions {
