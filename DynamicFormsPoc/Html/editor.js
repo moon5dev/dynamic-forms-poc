@@ -163,6 +163,23 @@
     return node;
   }
 
+  function getTableColumnCount(table) {
+    var maxColumns = 0;
+    if (!table) {
+      return 0;
+    }
+    for (var r = 0; r < table.rows.length; r++) {
+      var columns = 0;
+      for (var c = 0; c < table.rows[r].cells.length; c++) {
+        columns += table.rows[r].cells[c].colSpan || 1;
+      }
+      if (columns > maxColumns) {
+        maxColumns = columns;
+      }
+    }
+    return maxColumns;
+  }
+
   function requireCell() {
     var cell = getSelectedCell();
     if (!cell) {
@@ -758,7 +775,7 @@
         return;
       }
       var row = table.insertRow(getSelectedCell() ? getSelectedCell().parentNode.rowIndex + 1 : table.rows.length);
-      var columns = table.rows[0].cells.length;
+      var columns = getTableColumnCount(table) || 1;
       for (var i = 0; i < columns; i++) {
         row.insertCell(i).innerHTML = '&nbsp;';
       }
