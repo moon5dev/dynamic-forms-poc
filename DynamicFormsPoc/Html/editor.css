@@ -278,6 +278,14 @@ input[type="checkbox"].field-control {
   background: #fff;
 }
 
+.preview-body select.field-control {
+  display: none;
+}
+
+.preview-body .print-value {
+  display: inline;
+}
+
 .fill-mode .document {
   cursor: default;
 }
