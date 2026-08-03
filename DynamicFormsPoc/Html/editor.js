@@ -213,8 +213,32 @@
     return false;
   }
 
+  function isAllowedFillEvent(event) {
+    if (isAllowedFillTarget(event.target)) {
+      return true;
+    }
+    if (isAllowedFillTarget(document.activeElement)) {
+      return true;
+    }
+    if (isAllowedFillTarget(lastFillTarget)) {
+      var active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA')) {
+        return true;
+      }
+    }
+    if (event.composedPath) {
+      var path = event.composedPath();
+      for (var i = 0; i < path.length; i++) {
+        if (isAllowedFillTarget(path[i])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   function preventFillEdit(event) {
-    if (mode !== 'fill' || isAllowedFillTarget(event.target)) {
+    if (mode !== 'fill' || isAllowedFillEvent(event)) {
       return;
     }
 

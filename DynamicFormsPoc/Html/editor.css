@@ -197,6 +197,7 @@ th {
 .field-print-value {
   display: inline-block;
   min-width: 120px;
+  max-width: 100%;
   min-height: 24px;
   box-sizing: border-box;
   border: 1px solid #9aa7b2;
@@ -208,6 +209,16 @@ input.field-control,
 select.field-control {
   height: 26px;
   padding: 2px 6px;
+}
+
+td input.field-control,
+td select.field-control,
+td textarea.field-control,
+th input.field-control,
+th select.field-control,
+th textarea.field-control {
+  width: 100%;
+  min-width: 0;
 }
 
 input[type="checkbox"].field-control {
@@ -298,6 +309,10 @@ input[type="checkbox"].field-control {
 .fill-mode td,
 .fill-mode th {
   resize: none;
+}
+
+.fill-mode table {
+  table-layout: fixed;
 }
 
 .fill-mode .field-control,
