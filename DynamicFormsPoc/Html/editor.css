@@ -262,6 +262,10 @@ input[type="checkbox"].field-control {
   margin: 0 2px;
 }
 
+.preview-body .image-actions {
+  display: none;
+}
+
 .fill-mode .document {
   cursor: default;
 }
