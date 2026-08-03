@@ -225,6 +225,8 @@ input[type="checkbox"].field-control {
   min-width: auto;
   width: auto;
   height: auto;
+  min-height: 0;
+  margin: 0 4px 0 0;
   vertical-align: middle;
 }
 
@@ -232,6 +234,22 @@ input[type="checkbox"].field-control {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  line-height: 1.2;
+  margin: 0;
+  vertical-align: middle;
+}
+
+td input[type="checkbox"].field-control,
+th input[type="checkbox"].field-control {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+}
+
+td .field-label,
+th .field-label {
+  gap: 4px;
+  line-height: 1.2;
 }
 
 .image-field {
