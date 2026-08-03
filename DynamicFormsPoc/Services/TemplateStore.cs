@@ -118,29 +118,29 @@ namespace DynamicFormsPoc.Services
 
                 Save(new TemplateInfo
                 {
-                    Id = "sample-cc-tray",
-                    Name = "샘플 - CC Tray Inspection Report",
+                    Id = "sample-general-report",
+                    Name = "샘플 - 기본 검사 리포트",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    Html = SampleCcTrayHtml()
+                    Html = SampleGeneralReportHtml()
                 });
 
                 Save(new TemplateInfo
                 {
-                    Id = "sample-flatness",
-                    Name = "샘플 - 평면도 검사",
+                    Id = "sample-measurement",
+                    Name = "샘플 - 치수 측정 검사",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    Html = SampleFlatnessHtml()
+                    Html = SampleMeasurementHtml()
                 });
 
                 Save(new TemplateInfo
                 {
-                    Id = "sample-filter-treatment",
-                    Name = "샘플 - Ceramic Filter Treatment Result",
+                    Id = "sample-before-after",
+                    Name = "샘플 - 전후 이미지 검사",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    Html = SampleFilterTreatmentHtml()
+                    Html = SampleBeforeAfterHtml()
                 });
             }
 
@@ -151,10 +151,10 @@ namespace DynamicFormsPoc.Services
         {
             return "<h1 style=\"text-align:center\">검 사 성 적 서</h1>"
                 + "<table><tbody>"
-                + "<tr><th class=\"header-cell\">사용 구분</th><td>" + SelectField("sample-use", "사용 구분", "BRAND NEW", "REPAIR", "OTHERS") + "</td><th class=\"header-cell\">Project No.</th><td>" + TextField("sample-project", "Project No.") + "</td></tr>"
-                + "<tr><th class=\"header-cell\">제조사명</th><td>" + TextField("sample-maker", "제조사명") + "</td><th class=\"header-cell\">Part Code</th><td>" + TextField("sample-part", "Part Code") + "</td></tr>"
-                + "<tr><th class=\"header-cell\">검사일자</th><td>" + TextField("sample-date", "검사일자") + "</td><th class=\"header-cell\">Serial No.</th><td>" + TextField("sample-serial", "Serial No.") + "</td></tr>"
-                + "<tr><th class=\"header-cell\">검사원</th><td>" + TextField("sample-inspector", "검사원") + "</td><th class=\"header-cell\">Order No.</th><td>" + TextField("sample-order", "Order No.") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">구분</th><td>" + SelectField("sample-use", "구분", "신규", "재검", "기타") + "</td><th class=\"header-cell\">관리 번호</th><td>" + TextField("sample-project", "관리 번호") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">제품명</th><td>" + TextField("sample-maker", "제품명") + "</td><th class=\"header-cell\">품목 코드</th><td>" + TextField("sample-part", "품목 코드") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">검사일자</th><td>" + TextField("sample-date", "검사일자") + "</td><th class=\"header-cell\">로트 번호</th><td>" + TextField("sample-serial", "로트 번호") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">검사원</th><td>" + TextField("sample-inspector", "검사원") + "</td><th class=\"header-cell\">문서 번호</th><td>" + TextField("sample-order", "문서 번호") + "</td></tr>"
                 + "</tbody></table>"
                 + "<h3>검사 결과 요약</h3>"
                 + "<table><tbody>"
@@ -167,7 +167,7 @@ namespace DynamicFormsPoc.Services
 
         private static string SampleAppearanceHtml()
         {
-            return "<h1>외관 검사(코팅 전)</h1>"
+            return "<h1>이미지 검사</h1>"
                 + "<table><tbody>"
                 + "<tr><th class=\"header-cell\">전체 사진(정면)</th><th class=\"header-cell\">전체 사진(후면)</th></tr>"
                 + "<tr><td>" + ImageField("sample-img-1", "정면") + "</td><td>" + ImageField("sample-img-2", "후면") + "</td></tr>"
@@ -176,44 +176,44 @@ namespace DynamicFormsPoc.Services
                 + "</tbody></table>";
         }
 
-        private static string SampleCcTrayHtml()
+        private static string SampleGeneralReportHtml()
         {
-            return "<h1>CC Tray Inspection Report</h1>"
+            return "<h1>기본 검사 리포트</h1>"
                 + "<table><tbody>"
-                + "<tr><th class=\"header-cell\">Document Number</th><td>" + TextField("cc-doc-no", "Document Number") + "</td><th class=\"header-cell\">승인도 / 승인도 승인내역</th><td>" + TextField("cc-approval", "승인내역") + "</td></tr>"
-                + "<tr><th class=\"header-cell\">사용 구분</th><td colspan=\"3\">" + CheckField("cc-new", "BRAND NEW") + " " + CheckField("cc-repair", "REPAIR") + " " + CheckField("cc-others", "OTHERS") + "</td></tr>"
-                + "<tr><th class=\"header-cell\">PROJECT NO.</th><td>" + TextField("cc-project", "PROJECT NO.") + "</td><th class=\"header-cell\">PART CODE</th><td>" + TextField("cc-part", "PART CODE") + "</td></tr>"
-                + "<tr><th class=\"header-cell\">제조사명</th><td>" + TextField("cc-maker", "제조사명") + "</td><th class=\"header-cell\">Serial Number</th><td>" + TextField("cc-serial", "Serial Number") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">문서 번호</th><td>" + TextField("report-doc-no", "문서 번호") + "</td><th class=\"header-cell\">승인 내역</th><td>" + TextField("report-approval", "승인 내역") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">사용 구분</th><td colspan=\"3\">" + CheckField("report-new", "신규") + " " + CheckField("report-rework", "재작업") + " " + CheckField("report-etc", "기타") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">관리 번호</th><td>" + TextField("report-control-no", "관리 번호") + "</td><th class=\"header-cell\">품목 코드</th><td>" + TextField("report-item-code", "품목 코드") + "</td></tr>"
+                + "<tr><th class=\"header-cell\">제품명</th><td>" + TextField("report-product", "제품명") + "</td><th class=\"header-cell\">로트 번호</th><td>" + TextField("report-lot", "로트 번호") + "</td></tr>"
                 + "</tbody></table>"
                 + "<h3>검사 결과 요약</h3>"
                 + "<table><tbody>"
                 + "<tr><th class=\"header-cell\">No.</th><th class=\"header-cell\">검사 항목</th><th class=\"header-cell\">판정</th><th class=\"header-cell\">비고</th></tr>"
-                + "<tr><td>1</td><td>외관사전 코팅 전</td><td>" + SelectField("cc-result-1", "판정", "OK", "NG", "N/A") + "</td><td>" + TextField("cc-note-1", "비고") + "</td></tr>"
+                + "<tr><td>1</td><td>샘플 검사 항목</td><td>" + SelectField("report-result-1", "판정", "OK", "NG", "N/A") + "</td><td>" + TextField("report-note-1", "비고") + "</td></tr>"
                 + "</tbody></table>";
         }
 
-        private static string SampleFlatnessHtml()
+        private static string SampleMeasurementHtml()
         {
-            return "<h1>평면도 검사</h1>"
+            return "<h1>치수 측정 검사</h1>"
                 + "<table><tbody>"
-                + "<tr><th class=\"header-cell\" colspan=\"8\">평면도 측정영역(Flatness Measurement Point)</th></tr>"
+                + "<tr><th class=\"header-cell\" colspan=\"8\">측정 위치 및 기준</th></tr>"
                 + "<tr><td colspan=\"8\" style=\"height:210px\">측정 위치 도면 또는 설명 입력 영역</td></tr>"
-                + "<tr><th class=\"header-cell\" colspan=\"4\">Coating 전</th><th class=\"header-cell\" colspan=\"4\">Coating 후</th></tr>"
+                + "<tr><th class=\"header-cell\" colspan=\"4\">측정 그룹 A</th><th class=\"header-cell\" colspan=\"4\">측정 그룹 B</th></tr>"
                 + "<tr><th>No.</th><th>1</th><th>2</th><th>3</th><th>No.</th><th>1</th><th>2</th><th>3</th></tr>"
-                + "<tr><td>1</td><td>" + NumberField("flat-a1", "측정값") + "</td><td>" + NumberField("flat-a2", "측정값") + "</td><td>" + NumberField("flat-a3", "측정값") + "</td><td>1</td><td>" + NumberField("flat-b1", "측정값") + "</td><td>" + NumberField("flat-b2", "측정값") + "</td><td>" + NumberField("flat-b3", "측정값") + "</td></tr>"
-                + "<tr><td>판정</td><td colspan=\"3\">" + SelectField("flat-result-a", "판정", "OK", "NG", "N/A") + "</td><td>판정</td><td colspan=\"3\">" + SelectField("flat-result-b", "판정", "OK", "NG", "N/A") + "</td></tr>"
+                + "<tr><td>1</td><td>" + NumberField("measure-a1", "측정값") + "</td><td>" + NumberField("measure-a2", "측정값") + "</td><td>" + NumberField("measure-a3", "측정값") + "</td><td>1</td><td>" + NumberField("measure-b1", "측정값") + "</td><td>" + NumberField("measure-b2", "측정값") + "</td><td>" + NumberField("measure-b3", "측정값") + "</td></tr>"
+                + "<tr><td>판정</td><td colspan=\"3\">" + SelectField("measure-result-a", "판정", "OK", "NG", "N/A") + "</td><td>판정</td><td colspan=\"3\">" + SelectField("measure-result-b", "판정", "OK", "NG", "N/A") + "</td></tr>"
                 + "</tbody></table>";
         }
 
-        private static string SampleFilterTreatmentHtml()
+        private static string SampleBeforeAfterHtml()
         {
-            return "<h1>Ceramic Filter Treatment Result</h1>"
+            return "<h1>전후 이미지 검사</h1>"
                 + "<table><tbody>"
-                + "<tr><th class=\"header-cell\" colspan=\"5\">Ceramic Filter Treatment Result</th></tr>"
-                + "<tr><td colspan=\"5\" style=\"height:180px\">처리 조건 및 특이사항 입력 영역</td></tr>"
+                + "<tr><th class=\"header-cell\" colspan=\"5\">전후 비교 이미지</th></tr>"
+                + "<tr><td colspan=\"5\" style=\"height:180px\">검사 조건 및 특이사항 입력 영역</td></tr>"
                 + "<tr><th class=\"header-cell\">구분</th><th class=\"header-cell\">1</th><th class=\"header-cell\">2</th><th class=\"header-cell\">3</th><th class=\"header-cell\">4</th></tr>"
-                + "<tr><td>처리 전</td><td>" + ImageField("filter-before-1", "처리 전 1") + "</td><td>" + ImageField("filter-before-2", "처리 전 2") + "</td><td>" + ImageField("filter-before-3", "처리 전 3") + "</td><td>" + ImageField("filter-before-4", "처리 전 4") + "</td></tr>"
-                + "<tr><td>처리 후</td><td>" + ImageField("filter-after-1", "처리 후 1") + "</td><td>" + ImageField("filter-after-2", "처리 후 2") + "</td><td>" + ImageField("filter-after-3", "처리 후 3") + "</td><td>" + ImageField("filter-after-4", "처리 후 4") + "</td></tr>"
+                + "<tr><td>검사 전</td><td>" + ImageField("before-after-before-1", "검사 전 1") + "</td><td>" + ImageField("before-after-before-2", "검사 전 2") + "</td><td>" + ImageField("before-after-before-3", "검사 전 3") + "</td><td>" + ImageField("before-after-before-4", "검사 전 4") + "</td></tr>"
+                + "<tr><td>검사 후</td><td>" + ImageField("before-after-after-1", "검사 후 1") + "</td><td>" + ImageField("before-after-after-2", "검사 후 2") + "</td><td>" + ImageField("before-after-after-3", "검사 후 3") + "</td><td>" + ImageField("before-after-after-4", "검사 후 4") + "</td></tr>"
                 + "</tbody></table>";
         }
 
