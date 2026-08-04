@@ -455,14 +455,13 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
-    doc.setAttribute('contenteditable', mode === 'fill' ? 'false' : 'true');
+    doc.setAttribute('contenteditable', 'true');
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
     for (var i = 0; i < fields.length; i++) {
       fields[i].disabled = false;
       fields[i].removeAttribute('disabled');
       fields[i].removeAttribute('readonly');
-      fields[i].setAttribute('contenteditable', 'false');
       if (mode === 'design' && fields[i].tagName === 'BUTTON') {
         fields[i].disabled = true;
         fields[i].setAttribute('disabled', 'disabled');
@@ -555,7 +554,7 @@
       var target = event.target;
       if (hasClass(target, 'field-control')) {
         lastFillTarget = target;
-      } else {
+      } else if (target !== doc) {
         lastFillTarget = null;
       }
       rememberEditorRange();
