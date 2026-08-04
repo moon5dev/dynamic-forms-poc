@@ -4,6 +4,8 @@
   var documentElement;
   var savedRange;
   var cellColorTarget;
+  var pendingCellColor;
+  var pendingCellColorArmed = false;
   var lastFillTarget;
 
   function byId(id) {
@@ -51,6 +53,28 @@
     selection.removeAllRanges();
     selection.addRange(range);
     savedRange = range.cloneRange();
+  }
+
+  function rememberEditorRange() {
+    if (!window.getSelection) {
+      return;
+    }
+
+    var selection = window.getSelection();
+    if (!selection || !selection.rangeCount) {
+      return;
+    }
+
+    var range = selection.getRangeAt(0);
+    if (isRangeInEditor(range)) {
+      savedRange = range.cloneRange();
+      if (isSummernote) {
+        try {
+          window.jQuery('#document').summernote('saveRange');
+        } catch (ex) {
+        }
+      }
+    }
   }
 
   function createEndRange(node) {
@@ -107,9 +131,7 @@
     }
     focusDocument();
     document.execCommand('insertHTML', false, html);
-    if (isSummernote) {
-      syncEditorCodeFromDom();
-    }
+    rememberEditorRange();
     bindFieldEvents();
     post('content-changed');
   }
@@ -176,6 +198,10 @@
   function getSelectedCell() {
     var range = getEditorRange();
     var node = range && range.commonAncestorContainer;
+    return findCellFromNode(node);
+  }
+
+  function findCellFromNode(node) {
     while (node && node.nodeType !== 1) {
       node = node.parentNode;
     }
@@ -218,9 +244,11 @@
     return cell;
   }
 
-  function applyCellBackground(cell, color) {
+  function applyCellBackground(cell, color, silent) {
     if (!cell) {
-      post('error', { Message: '표 셀 안에 커서를 둔 뒤 실행하세요.', message: '표 셀 안에 커서를 둔 뒤 실행하세요.' });
+      if (!silent) {
+        post('error', { Message: '표 셀 안에 커서를 둔 뒤 실행하세요.', message: '표 셀 안에 커서를 둔 뒤 실행하세요.' });
+      }
       return;
     }
     cell.style.backgroundColor = color || '#dfeef3';
@@ -455,13 +483,6 @@
   function syncEditorCodeFromDom() {
     var doc = editable();
     syncFieldAttributes(doc);
-    if (mode === 'fill') {
-      return;
-    }
-    if (isSummernote) {
-      window.jQuery('#document').summernote('code', doc.innerHTML);
-      documentElement = document.querySelector('.note-editable');
-    }
   }
 
   function bindFieldEvents() {
@@ -472,17 +493,22 @@
     doc.setAttribute('data-dynamic-events', '1');
 
     doc.addEventListener('input', function () {
+      rememberEditorRange();
       post('content-changed');
     });
     doc.addEventListener('change', function () {
+      rememberEditorRange();
       post('content-changed');
     });
+    doc.addEventListener('keyup', rememberEditorRange);
+    doc.addEventListener('mouseup', rememberEditorRange);
     doc.addEventListener('keydown', preventFillEdit, true);
     doc.addEventListener('beforeinput', preventFillEdit, true);
     doc.addEventListener('paste', preventFillEdit, true);
     doc.addEventListener('drop', preventFillEdit, true);
     doc.addEventListener('mousedown', function (event) {
       var target = event.target;
+      rememberEditorRange();
       if (hasClass(target, 'field-control')) {
         lastFillTarget = target;
       } else if (findImageField(target)) {
@@ -493,6 +519,13 @@
     });
     doc.addEventListener('click', function (event) {
       var target = event.target;
+      var clickedCell = findCellFromNode(target);
+      if (mode === 'design' && pendingCellColorArmed && clickedCell) {
+        applyCellBackground(clickedCell, pendingCellColor, true);
+        pendingCellColor = null;
+        pendingCellColorArmed = false;
+        cellColorTarget = null;
+      }
       if (hasClass(target, 'field-control')) {
         lastFillTarget = target;
       } else if (findImageField(target)) {
@@ -524,16 +557,29 @@
       } else {
         lastFillTarget = null;
       }
+      rememberEditorRange();
     });
   }
 
   function trackSelection() {
     document.addEventListener('selectionchange', function () {
-      var range = getEditorRange();
-      if (range && isRangeInEditor(range)) {
-        savedRange = range.cloneRange();
-      }
+      rememberEditorRange();
     });
+  }
+
+  function bindToolbarEvents() {
+    var toolbar = byId('dynamic-toolbar');
+    if (!toolbar || toolbar.getAttribute('data-range-events') === '1') {
+      return;
+    }
+    toolbar.setAttribute('data-range-events', '1');
+    toolbar.addEventListener('mousedown', function (event) {
+      var target = event.target;
+      rememberEditorRange();
+      if (target && target.tagName === 'BUTTON') {
+        event.preventDefault();
+      }
+    }, true);
   }
 
   function findImageField(node) {
@@ -951,17 +997,27 @@
       if (mode !== 'design') {
         return;
       }
-      applyCellBackground(getSelectedCell(), color);
+      applyCellBackground(cellColorTarget || getSelectedCell(), color);
+      pendingCellColor = null;
+      pendingCellColorArmed = false;
+      cellColorTarget = null;
     },
     captureCellColorTarget: function () {
+      rememberEditorRange();
       cellColorTarget = getSelectedCell();
     },
     applyCellColorPicker: function (color, done) {
       if (mode !== 'design') {
         return;
       }
-      applyCellBackground(cellColorTarget || getSelectedCell(), color);
-      if (done) {
+      pendingCellColor = color || '#dfeef3';
+      if (cellColorTarget) {
+        applyCellBackground(cellColorTarget, pendingCellColor, true);
+        pendingCellColorArmed = false;
+      } else {
+        pendingCellColorArmed = true;
+      }
+      if (done && cellColorTarget) {
         cellColorTarget = null;
       }
     },
@@ -1074,6 +1130,7 @@
     documentElement = byId('document');
     initSummernote();
     bindFieldEvents();
+    bindToolbarEvents();
     trackSelection();
     setReadonlyForMode();
     window.editor.isReady = true;
