@@ -3,6 +3,7 @@
   var isSummernote = false;
   var documentElement;
   var savedRange;
+  var cellColorTarget;
   var lastFillTarget;
 
   function byId(id) {
@@ -41,11 +42,45 @@
       return;
     }
     doc.focus();
-    if (savedRange && window.getSelection) {
-      var selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(savedRange);
+    if (!window.getSelection) {
+      return;
     }
+
+    var range = getEditorRange() || createEndRange(doc);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    savedRange = range.cloneRange();
+  }
+
+  function createEndRange(node) {
+    var range = document.createRange();
+    range.selectNodeContents(node);
+    range.collapse(false);
+    return range;
+  }
+
+  function isRangeInEditor(range) {
+    var doc = editable();
+    return !!(doc && range && doc.contains(range.commonAncestorContainer));
+  }
+
+  function getEditorRange() {
+    if (window.getSelection) {
+      var selection = window.getSelection();
+      if (selection && selection.rangeCount) {
+        var currentRange = selection.getRangeAt(0);
+        if (isRangeInEditor(currentRange)) {
+          return currentRange;
+        }
+      }
+    }
+
+    if (isRangeInEditor(savedRange)) {
+      return savedRange;
+    }
+
+    return null;
   }
 
   function getHtml() {
@@ -70,12 +105,10 @@
     if (mode !== 'design') {
       return;
     }
+    focusDocument();
+    document.execCommand('insertHTML', false, html);
     if (isSummernote) {
-      window.jQuery('#document').summernote('focus');
-      window.jQuery('#document').summernote('pasteHTML', html);
-    } else {
-      focusDocument();
-      document.execCommand('insertHTML', false, html);
+      syncEditorCodeFromDom();
     }
     bindFieldEvents();
     post('content-changed');
@@ -141,11 +174,8 @@
   }
 
   function getSelectedCell() {
-    var selection = window.getSelection && window.getSelection();
-    var node = selection && selection.anchorNode;
-    if (!node && savedRange) {
-      node = savedRange.commonAncestorContainer;
-    }
+    var range = getEditorRange();
+    var node = range && range.commonAncestorContainer;
     while (node && node.nodeType !== 1) {
       node = node.parentNode;
     }
@@ -186,6 +216,15 @@
       post('error', { Message: '표 셀 안에 커서를 둔 뒤 실행하세요.', message: '표 셀 안에 커서를 둔 뒤 실행하세요.' });
     }
     return cell;
+  }
+
+  function applyCellBackground(cell, color) {
+    if (!cell) {
+      post('error', { Message: '표 셀 안에 커서를 둔 뒤 실행하세요.', message: '표 셀 안에 커서를 둔 뒤 실행하세요.' });
+      return;
+    }
+    cell.style.backgroundColor = color || '#dfeef3';
+    post('content-changed');
   }
 
   function getFocusedField() {
@@ -490,16 +529,8 @@
 
   function trackSelection() {
     document.addEventListener('selectionchange', function () {
-      var doc = editable();
-      if (!doc || !window.getSelection) {
-        return;
-      }
-      var selection = window.getSelection();
-      if (!selection.rangeCount) {
-        return;
-      }
-      var range = selection.getRangeAt(0);
-      if (doc.contains(range.commonAncestorContainer)) {
+      var range = getEditorRange();
+      if (range && isRangeInEditor(range)) {
         savedRange = range.cloneRange();
       }
     });
@@ -920,12 +951,19 @@
       if (mode !== 'design') {
         return;
       }
-      var cell = requireCell();
-      if (!cell) {
+      applyCellBackground(getSelectedCell(), color);
+    },
+    captureCellColorTarget: function () {
+      cellColorTarget = getSelectedCell();
+    },
+    applyCellColorPicker: function (color, done) {
+      if (mode !== 'design') {
         return;
       }
-      cell.style.backgroundColor = color || '#dfeef3';
-      post('content-changed');
+      applyCellBackground(cellColorTarget || getSelectedCell(), color);
+      if (done) {
+        cellColorTarget = null;
+      }
     },
     insertTextField: function (config) {
       config = getConfig(config);

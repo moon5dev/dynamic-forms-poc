@@ -17,7 +17,7 @@
     <button type="button" data-design-only="true" onclick="window.editor.splitCell()">분할</button>
     <button type="button" data-design-only="true" onclick="window.editor.toggleHeaderCell()">헤더</button>
     <button type="button" data-design-only="true" onclick="window.editor.setCellSize()">셀크기</button>
-    <label class="toolbar-color-label" data-design-only="true">셀색 <input id="cellColorPicker" type="color" value="#dfeef3" oninput="window.editor.setCellBackground(this.value)" onchange="window.editor.setCellBackground(this.value)" /></label>
+    <label class="toolbar-color-label" data-design-only="true">셀색 <input id="cellColorPicker" type="color" value="#dfeef3" onmousedown="window.editor.captureCellColorTarget()" onfocus="window.editor.captureCellColorTarget()" oninput="window.editor.applyCellColorPicker(this.value, false)" onchange="window.editor.applyCellColorPicker(this.value, true)" /></label>
     <button type="button" data-design-only="true" onclick="window.editor.setCellBackground(document.getElementById('cellColorPicker').value)">적용</button>
     <span class="toolbar-separator"></span>
     <button type="button" data-design-only="true" onclick="window.editor.promptInsertTextField()">텍스트</button>
