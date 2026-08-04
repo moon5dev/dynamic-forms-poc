@@ -167,6 +167,7 @@ p {
 
 table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   margin: 12px 0;
 }
@@ -178,7 +179,7 @@ th {
   min-width: 60px;
   vertical-align: top;
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: anywhere;
 }
 
 th {
@@ -221,6 +222,11 @@ th textarea.field-control {
   min-width: 0;
 }
 
+td .field-control,
+th .field-control {
+  max-width: 100%;
+}
+
 input[type="checkbox"].field-control {
   min-width: auto;
   width: auto;
@@ -234,9 +240,12 @@ input[type="checkbox"].field-control {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  max-width: 100%;
+  min-width: 0;
   line-height: 1.2;
   margin: 0;
   vertical-align: middle;
+  white-space: normal;
 }
 
 td input[type="checkbox"].field-control,
@@ -250,6 +259,8 @@ td .field-label,
 th .field-label {
   gap: 4px;
   line-height: 1.2;
+  flex-wrap: wrap;
+  overflow-wrap: anywhere;
 }
 
 .image-field {

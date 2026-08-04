@@ -718,7 +718,7 @@
   window.editor = {
     isReady: false,
     newTemplate: function () {
-      setHtml('<h1 style="text-align:center">신규 검사성적서</h1><table><tbody><tr><th class="header-cell">문서 번호</th><td>&nbsp;</td><th class="header-cell">양식명</th><td>&nbsp;</td></tr><tr><th class="header-cell">제품명</th><td>&nbsp;</td><th class="header-cell">검사일자</th><td>&nbsp;</td></tr><tr><th class="header-cell">검사 항목</th><th class="header-cell">기준</th><th class="header-cell">판정</th><th class="header-cell">비고</th></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table><p>관리자 모드에서 표와 필드를 구성한 뒤 저장하고, 사용자 모드에서 데이터만 입력합니다.</p>');
+      setHtml('');
       mode = 'design';
       setReadonlyForMode();
       post('content-changed');
