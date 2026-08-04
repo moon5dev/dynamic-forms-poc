@@ -467,6 +467,7 @@
         fields[i].setAttribute('disabled', 'disabled');
       }
     }
+    bindFillControlEvents(doc);
   }
 
   function updateCommandToolbar() {
@@ -558,6 +559,84 @@
         lastFillTarget = null;
       }
       rememberEditorRange();
+    });
+  }
+
+  function bindFillControlEvents(root) {
+    root = root || editable();
+    if (!root) {
+      return;
+    }
+
+    var controls = root.querySelectorAll('input.field-control, select.field-control, textarea.field-control');
+    for (var i = 0; i < controls.length; i++) {
+      bindFillControlEvent(controls[i]);
+    }
+  }
+
+  function bindFillControlEvent(control) {
+    if (!control || control.getAttribute('data-fill-events') === '1') {
+      return;
+    }
+    control.setAttribute('data-fill-events', '1');
+
+    control.addEventListener('mousedown', function (event) {
+      lastFillTarget = control;
+      if (mode === 'fill' && control.focus) {
+        control.focus();
+      }
+      event.stopPropagation();
+    });
+
+    control.addEventListener('click', function (event) {
+      lastFillTarget = control;
+      if (mode === 'fill' && control.focus) {
+        control.focus();
+      }
+      event.stopPropagation();
+    });
+
+    control.addEventListener('focus', function () {
+      lastFillTarget = control;
+    });
+
+    control.addEventListener('keydown', function (event) {
+      lastFillTarget = control;
+      if (mode === 'fill') {
+        event.stopPropagation();
+      }
+    });
+
+    control.addEventListener('beforeinput', function (event) {
+      lastFillTarget = control;
+      if (mode === 'fill') {
+        event.stopPropagation();
+      }
+    });
+
+    control.addEventListener('paste', function (event) {
+      lastFillTarget = control;
+      if (mode === 'fill') {
+        event.stopPropagation();
+      }
+    });
+
+    control.addEventListener('input', function (event) {
+      lastFillTarget = control;
+      syncFieldAttributes(control.parentNode || editable());
+      post('content-changed');
+      if (mode === 'fill') {
+        event.stopPropagation();
+      }
+    });
+
+    control.addEventListener('change', function (event) {
+      lastFillTarget = control;
+      syncFieldAttributes(control.parentNode || editable());
+      post('content-changed');
+      if (mode === 'fill') {
+        event.stopPropagation();
+      }
     });
   }
 
