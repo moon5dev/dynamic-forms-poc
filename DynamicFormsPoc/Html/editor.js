@@ -73,7 +73,6 @@
 
     var doc = document.createElement('div');
     doc.className = 'document fill-document';
-    doc.setAttribute('contenteditable', 'false');
     doc.innerHTML = getHtml();
 
     page.appendChild(doc);
@@ -507,7 +506,11 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
-    doc.setAttribute('contenteditable', mode === 'fill' ? 'false' : 'true');
+    if (mode === 'fill') {
+      doc.removeAttribute('contenteditable');
+    } else {
+      doc.setAttribute('contenteditable', 'true');
+    }
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
     for (var i = 0; i < fields.length; i++) {
