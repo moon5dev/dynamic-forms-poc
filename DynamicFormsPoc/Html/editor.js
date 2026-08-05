@@ -2,7 +2,6 @@
   var mode = 'design';
   var isSummernote = false;
   var documentElement;
-  var fillDocumentElement;
   var savedRange;
   var cellColorTarget;
   var pendingCellColor;
@@ -30,9 +29,6 @@
   }
 
   function editable() {
-    if (mode === 'fill' && fillDocumentElement) {
-      return fillDocumentElement;
-    }
     if (isSummernote) {
       documentElement = document.querySelector('.note-editable');
     }
@@ -40,52 +36,6 @@
       documentElement = byId('document');
     }
     return documentElement;
-  }
-
-  function showDesignSurface(show) {
-    var page = byId('page');
-    var noteEditor = document.querySelector('.note-editor');
-    if (page) {
-      page.style.display = show ? '' : 'none';
-    }
-    if (noteEditor) {
-      noteEditor.style.display = show ? '' : 'none';
-    }
-  }
-
-  function removeFillSurface() {
-    var oldPage = document.querySelector('.fill-page');
-    if (oldPage && oldPage.parentNode) {
-      oldPage.parentNode.removeChild(oldPage);
-    }
-    fillDocumentElement = null;
-  }
-
-  function createFillSurface() {
-    var workspace = byId('workspace');
-    if (!workspace) {
-      return;
-    }
-
-    removeFillSurface();
-    var page = document.createElement('div');
-    page.className = 'a4-page fill-page';
-
-    var doc = document.createElement('div');
-    doc.className = 'document fill-document';
-    doc.innerHTML = getHtml();
-
-    page.appendChild(doc);
-    workspace.appendChild(page);
-    fillDocumentElement = doc;
-    showDesignSurface(false);
-    bindFieldEvents();
-    bindFillControlEvents(doc);
-  }
-
-  function restoreDesignSurface() {
-    removeFillSurface();
-    showDesignSurface(true);
   }
 
   function focusDocument() {
@@ -165,7 +115,6 @@
   }
 
   function setHtml(html) {
-    restoreDesignSurface();
     if (isSummernote) {
       window.jQuery('#document').summernote('code', html || '');
       documentElement = document.querySelector('.note-editable');
@@ -506,11 +455,7 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
-    if (mode === 'fill') {
-      doc.removeAttribute('contenteditable');
-    } else {
-      doc.setAttribute('contenteditable', 'true');
-    }
+    doc.setAttribute('contenteditable', 'true');
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
     for (var i = 0; i < fields.length; i++) {
@@ -522,7 +467,6 @@
         fields[i].setAttribute('disabled', 'disabled');
       }
     }
-    bindFillControlEvents(doc);
   }
 
   function updateCommandToolbar() {
@@ -614,84 +558,6 @@
         lastFillTarget = null;
       }
       rememberEditorRange();
-    });
-  }
-
-  function bindFillControlEvents(root) {
-    root = root || editable();
-    if (!root) {
-      return;
-    }
-
-    var controls = root.querySelectorAll('input.field-control, select.field-control, textarea.field-control');
-    for (var i = 0; i < controls.length; i++) {
-      bindFillControlEvent(controls[i]);
-    }
-  }
-
-  function bindFillControlEvent(control) {
-    if (!control || control.getAttribute('data-fill-events') === '1') {
-      return;
-    }
-    control.setAttribute('data-fill-events', '1');
-
-    control.addEventListener('mousedown', function (event) {
-      lastFillTarget = control;
-      if (mode === 'fill' && control.focus) {
-        control.focus();
-      }
-      event.stopPropagation();
-    });
-
-    control.addEventListener('click', function (event) {
-      lastFillTarget = control;
-      if (mode === 'fill' && control.focus) {
-        control.focus();
-      }
-      event.stopPropagation();
-    });
-
-    control.addEventListener('focus', function () {
-      lastFillTarget = control;
-    });
-
-    control.addEventListener('keydown', function (event) {
-      lastFillTarget = control;
-      if (mode === 'fill') {
-        event.stopPropagation();
-      }
-    });
-
-    control.addEventListener('beforeinput', function (event) {
-      lastFillTarget = control;
-      if (mode === 'fill') {
-        event.stopPropagation();
-      }
-    });
-
-    control.addEventListener('paste', function (event) {
-      lastFillTarget = control;
-      if (mode === 'fill') {
-        event.stopPropagation();
-      }
-    });
-
-    control.addEventListener('input', function (event) {
-      lastFillTarget = control;
-      syncFieldAttributes(control.parentNode || editable());
-      post('content-changed');
-      if (mode === 'fill') {
-        event.stopPropagation();
-      }
-    });
-
-    control.addEventListener('change', function (event) {
-      lastFillTarget = control;
-      syncFieldAttributes(control.parentNode || editable());
-      post('content-changed');
-      if (mode === 'fill') {
-        event.stopPropagation();
-      }
     });
   }
 
@@ -929,7 +795,6 @@
   window.editor = {
     isReady: false,
     newTemplate: function () {
-      restoreDesignSurface();
       setHtml('');
       mode = 'design';
       setReadonlyForMode();
@@ -946,11 +811,6 @@
     },
     setMode: function (nextMode) {
       mode = nextMode === 'fill' ? 'fill' : 'design';
-      if (mode === 'fill') {
-        createFillSurface();
-      } else {
-        restoreDesignSurface();
-      }
       setReadonlyForMode();
     },
     resetValues: function () {
