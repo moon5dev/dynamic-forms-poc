@@ -28,6 +28,23 @@
     return window.jQuery && window.jQuery.fn && window.jQuery.fn.summernote;
   }
 
+  function debugLog(msg) {
+    var el = byId('fillDebugLog');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'fillDebugLog';
+      el.style.cssText = 'position:fixed;left:0;right:0;bottom:0;max-height:180px;overflow:auto;'
+        + 'background:rgba(0,0,0,0.85);color:#7CFC00;font:11px/1.4 Consolas,monospace;padding:6px 8px;z-index:99999;white-space:pre-wrap;';
+      document.body.appendChild(el);
+    }
+    var line = document.createElement('div');
+    var d = new Date();
+    var stamp = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2) + '.' + ('00' + d.getMilliseconds()).slice(-3);
+    line.textContent = stamp + '  ' + msg;
+    el.appendChild(line);
+    el.scrollTop = el.scrollHeight;
+  }
+
   function editable() {
     if (isSummernote) {
       documentElement = document.querySelector('.note-editable');
@@ -492,9 +509,12 @@
     }
     doc.setAttribute('data-dynamic-events', '1');
 
-    doc.addEventListener('input', function () {
+    doc.addEventListener('input', function (event) {
       rememberEditorRange();
       post('content-changed');
+      if (mode === 'fill') {
+        debugLog('input target=' + event.target.tagName + '.' + (event.target.className || '') + ' value="' + (event.target.value !== undefined ? event.target.value : '(n/a)') + '"');
+      }
     });
     doc.addEventListener('change', function () {
       rememberEditorRange();
@@ -502,10 +522,35 @@
     });
     doc.addEventListener('keyup', rememberEditorRange);
     doc.addEventListener('mouseup', rememberEditorRange);
+    doc.addEventListener('keydown', function (event) {
+      if (mode === 'fill') {
+        debugLog('keydown key="' + event.key + '" target=' + event.target.tagName + '.' + (event.target.className || '') + ' allowed=' + isAllowedFillEvent(event) + ' activeEl=' + (document.activeElement && document.activeElement.tagName));
+      }
+    }, true);
     doc.addEventListener('keydown', preventFillEdit, true);
+    doc.addEventListener('keydown', function (event) {
+      if (mode === 'fill') {
+        debugLog('  -> after preventFillEdit, defaultPrevented=' + event.defaultPrevented);
+      }
+    }, true);
+    doc.addEventListener('beforeinput', function (event) {
+      if (mode === 'fill') {
+        debugLog('beforeinput type=' + event.inputType + ' target=' + event.target.tagName + '.' + (event.target.className || '') + ' allowed=' + isAllowedFillEvent(event));
+      }
+    }, true);
     doc.addEventListener('beforeinput', preventFillEdit, true);
+    doc.addEventListener('beforeinput', function (event) {
+      if (mode === 'fill') {
+        debugLog('  -> after preventFillEdit, defaultPrevented=' + event.defaultPrevented);
+      }
+    }, true);
     doc.addEventListener('paste', preventFillEdit, true);
     doc.addEventListener('drop', preventFillEdit, true);
+    doc.addEventListener('focus', function (event) {
+      if (mode === 'fill') {
+        debugLog('focus(capture) target=' + event.target.tagName + '.' + (event.target.className || ''));
+      }
+    }, true);
     doc.addEventListener('mousedown', function (event) {
       var target = event.target;
       rememberEditorRange();
@@ -812,6 +857,9 @@
     setMode: function (nextMode) {
       mode = nextMode === 'fill' ? 'fill' : 'design';
       setReadonlyForMode();
+      if (mode === 'fill') {
+        debugLog('=== entered fill mode, editable()=' + (editable() ? editable().tagName + '.' + editable().className : 'null') + ' contenteditable=' + (editable() && editable().getAttribute('contenteditable')));
+      }
     },
     resetValues: function () {
       clearFieldValues(editable());
