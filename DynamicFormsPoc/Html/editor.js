@@ -507,7 +507,7 @@
 
     document.body.className = mode === 'fill' ? 'fill-mode' : '';
     updateCommandToolbar();
-    doc.setAttribute('contenteditable', 'true');
+    doc.setAttribute('contenteditable', mode === 'fill' ? 'false' : 'true');
 
     var fields = doc.querySelectorAll('input, select, textarea, button');
     for (var i = 0; i < fields.length; i++) {
