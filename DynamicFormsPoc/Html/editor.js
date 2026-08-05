@@ -611,20 +611,27 @@
   function bindFillControlEvents(root) {
     root = root || editable();
     if (!root) {
+      debugLog('bindFillControlEvents: no root, skipped');
       return;
     }
 
     var controls = root.querySelectorAll('input.field-control, select.field-control, textarea.field-control');
+    debugLog('bindFillControlEvents on ' + root.tagName + '.' + root.className + ' found ' + controls.length + ' control(s)');
     for (var i = 0; i < controls.length; i++) {
       bindFillControlEvent(controls[i]);
     }
   }
 
   function bindFillControlEvent(control) {
-    if (!control || control.getAttribute('data-fill-events') === '1') {
+    if (!control) {
+      return;
+    }
+    if (control.getAttribute('data-fill-events') === '1') {
+      debugLog('bindFillControlEvent: already bound, skipping ' + control.tagName + ' id=' + control.getAttribute('data-field-id'));
       return;
     }
     control.setAttribute('data-fill-events', '1');
+    debugLog('bindFillControlEvent: attached listeners to ' + control.tagName + ' id=' + control.getAttribute('data-field-id'));
 
     control.addEventListener('mousedown', function (event) {
       lastFillTarget = control;
@@ -1262,6 +1269,29 @@
       window.print();
     }
   };
+
+  function forceFocusFillControl(target) {
+    debugLog('GLOBAL capture -> forcing focus on ' + target.tagName + ' id=' + target.getAttribute('data-field-id'));
+    target.focus();
+    setTimeout(function () {
+      if (document.activeElement !== target) {
+        debugLog('GLOBAL deferred refocus, activeElement was ' + (document.activeElement && document.activeElement.tagName));
+        target.focus();
+      }
+    }, 0);
+  }
+
+  document.addEventListener('mousedown', function (event) {
+    if (mode === 'fill' && isNativeFillControl(event.target)) {
+      forceFocusFillControl(event.target);
+    }
+  }, true);
+
+  document.addEventListener('click', function (event) {
+    if (mode === 'fill' && isNativeFillControl(event.target)) {
+      forceFocusFillControl(event.target);
+    }
+  }, true);
 
   document.addEventListener('DOMContentLoaded', function () {
     documentElement = byId('document');
