@@ -555,6 +555,9 @@
     }, true);
     doc.addEventListener('mousedown', function (event) {
       var target = event.target;
+      if (mode === 'fill') {
+        debugLog('RAW click target=' + target.tagName + ' class="' + (target.className || '') + '" outerHTML=' + String(target.outerHTML || '').slice(0, 160));
+      }
       rememberEditorRange();
       if (hasClass(target, 'field-control')) {
         lastFillTarget = target;
@@ -955,6 +958,11 @@
       setReadonlyForMode();
       if (mode === 'fill') {
         debugLog('=== entered fill mode, editable()=' + (editable() ? editable().tagName + '.' + editable().className : 'null') + ' contenteditable=' + (editable() && editable().getAttribute('contenteditable')));
+        var allInputs = editable() ? editable().querySelectorAll('input, select, textarea') : [];
+        debugLog('=== total input/select/textarea in doc: ' + allInputs.length);
+        for (var di = 0; di < allInputs.length && di < 3; di++) {
+          debugLog('  [' + di + '] ' + allInputs[di].tagName + ' class="' + (allInputs[di].className || '') + '"');
+        }
       }
     },
     resetValues: function () {
